@@ -1,0 +1,159 @@
+.operations-page {
+  padding: 28px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Page header */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.page-title {
+  margin: 0 0 4px;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Search panel */
+.search-card {
+  border-radius: 10px !important;
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+/* Table card */
+.table-card {
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+.table-card-content {
+  padding: 0 !important;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+/* Loading / error */
+.table-loading,
+.table-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 24px;
+  color: #666;
+}
+
+.table-error {
+  color: #c62828;
+}
+
+/* Table */
+.ops-table {
+  width: 100%;
+}
+
+.table-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.table-row:hover {
+  background-color: #f5f8ff;
+}
+
+/* Op ID as clickable link */
+.op-id-link {
+  color: #1976d2;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.op-id-link:hover {
+  text-decoration: underline;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status--completed  { background: #e8f5e9; color: #2e7d32; }
+.status--failed     { background: #ffebee; color: #c62828; }
+.status--pending    { background: #fff8e1; color: #f57f17; }
+.status--processing { background: #e3f2fd; color: #1565c0; }
+
+/* Priority badges */
+.priority-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.priority--high   { background: #ffebee; color: #c62828; }
+.priority--medium { background: #fff3e0; color: #e65100; }
+.priority--low    { background: #e8f5e9; color: #2e7d32; }
+
+/* Empty state */
+.empty-table {
+  text-align: center;
+  padding: 60px 24px !important;
+  color: #999;
+}
+
+.empty-table mat-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  color: #ddd;
+  display: block;
+  margin: 0 auto 8px;
+}

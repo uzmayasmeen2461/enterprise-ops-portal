@@ -1,0 +1,212 @@
+<div class="operations-page">
+
+  <!-- AI Search Bar -->
+  <!-- (filtersResolved) is the @output() from AiSearchBarComponent          -->
+  <!-- $event is the AiSearchResult — Angular passes it to onAiResult()      -->
+  <app-ai-search-bar
+    (filtersResolved)="onAiResult($event)">
+  </app-ai-search-bar>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Operations</h1>
+      <p class="page-subtitle">Search, filter and manage all operations</p>
+    </div>
+    <button mat-icon-button (click)="toggleSearch()" matTooltip="Toggle search panel">
+      <mat-icon>{{ searchExpanded() ? 'expand_less' : 'filter_list' }}</mat-icon>
+    </button>
+  </div>
+
+  <!-- Search / Filter Panel -->
+  @if (searchExpanded()) {
+    <mat-card class="search-card">
+      <mat-card-content>
+        <form [formGroup]="searchForm" class="search-form">
+
+          <div class="form-row">
+
+            <!-- Operation ID -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Operation ID</mat-label>
+              <input matInput formControlName="operationId" placeholder="e.g. OPS-00001" />
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+
+            <!-- Status -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="">All Statuses</mat-option>
+                @for (s of statuses; track s) {
+                  <mat-option [value]="s">{{ s | statusFormat }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Priority -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Priority</mat-label>
+              <mat-select formControlName="priority">
+                <mat-option value="">All Priorities</mat-option>
+                @for (p of priorities; track p) {
+                  <mat-option [value]="p">{{ p | statusFormat }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Source System -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Source System</mat-label>
+              <mat-select formControlName="sourceSystem">
+                <mat-option value="">All Systems</mat-option>
+                @for (src of sourceSystems; track src) {
+                  <mat-option [value]="src">{{ src }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Created From -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Created From</mat-label>
+              <input matInput [matDatepicker]="fromPicker" formControlName="createdFrom" />
+              <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+              <mat-datepicker #fromPicker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Created To -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Created To</mat-label>
+              <input matInput [matDatepicker]="toPicker" formControlName="createdTo" />
+              <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+              <mat-datepicker #toPicker></mat-datepicker>
+            </mat-form-field>
+
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button mat-button type="button" (click)="onReset()" [disabled]="loading()">
+              <mat-icon>clear</mat-icon> Reset
+            </button>
+            <button mat-raised-button color="primary" type="button"
+              (click)="onSearch()" [disabled]="loading()">
+              <mat-icon>search</mat-icon> Search
+            </button>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Results Table Card -->
+  <mat-card class="table-card">
+    <mat-card-content class="table-card-content">
+
+      <!-- Loading state -->
+      @if (loading()) {
+        <div class="table-loading">
+          <mat-spinner diameter="40"></mat-spinner>
+          <span>Loading operations...</span>
+        </div>
+      }
+
+      <!-- Error state -->
+      @if (error() && !loading()) {
+        <div class="table-error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <!-- Table -->
+      @if (!loading() && !error()) {
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="dataSource" matSort class="ops-table">
+
+            <!-- Operation ID Column -->
+            <ng-container matColumnDef="operationId">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Operation ID</th>
+              <td mat-cell *matCellDef="let op">
+                <span class="op-id-link" (click)="onViewDetail(op)">{{ op.operationId }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+              <td mat-cell *matCellDef="let op">
+                <span class="status-badge" [class]="getStatusClass(op.status)">
+                  {{ op.status | statusFormat }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Priority Column -->
+            <ng-container matColumnDef="priority">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
+              <td mat-cell *matCellDef="let op">
+                <span class="priority-badge" [class]="getPriorityClass(op.priority)">
+                  {{ op.priority | statusFormat }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Source System Column -->
+            <ng-container matColumnDef="sourceSystem">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Source System</th>
+              <td mat-cell *matCellDef="let op">{{ op.sourceSystem }}</td>
+            </ng-container>
+
+            <!-- Created Date Column -->
+            <ng-container matColumnDef="createdDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date</th>
+              <td mat-cell *matCellDef="let op">
+                {{ op.createdDate | date: 'dd MMM yyyy' }}
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let op">
+                <button mat-icon-button color="primary"
+                  (click)="onViewDetail(op)"
+                  matTooltip="View details">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!-- Header and Row declarations -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+              class="table-row"
+              (click)="onViewDetail(row)">
+            </tr>
+
+            <!-- Empty state row -->
+            <tr class="mat-row" *matNoDataRow>
+              <td [colSpan]="displayedColumns.length" class="empty-table">
+                <mat-icon>inbox</mat-icon>
+                <p>No operations found matching your search criteria.</p>
+                <button mat-stroked-button (click)="onReset()">Clear Filters</button>
+              </td>
+            </tr>
+
+          </table>
+        </div>
+
+        <!-- Paginator -->
+        <mat-paginator
+          [pageSizeOptions]="[10, 25, 50]"
+          [pageSize]="10"
+          showFirstLastButtons>
+        </mat-paginator>
+      }
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

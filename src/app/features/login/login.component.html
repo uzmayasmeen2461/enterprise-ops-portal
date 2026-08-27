@@ -1,0 +1,106 @@
+<div class="login-container">
+  <mat-card class="login-card">
+
+    <!-- Header -->
+    <mat-card-header class="login-header">
+      <div class="login-logo">
+        <mat-icon class="logo-icon">corporate_fare</mat-icon>
+      </div>
+      <mat-card-title>Enterprise Ops Portal</mat-card-title>
+      <mat-card-subtitle>Sign in to your account</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- Login form — [formGroup] connects the template to the class FormGroup -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+
+        <!-- USERNAME FIELD -->
+        <!-- mat-form-field is Angular Material's input wrapper -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+
+          <!-- formControlName links this input to the 'username' FormControl -->
+          <!-- React equivalent: value={username} onChange={e => setUsername(e.target.value)} -->
+          <input
+            matInput
+            formControlName="username"
+            placeholder="Enter your username"
+            autocomplete="username" />
+
+          <mat-icon matPrefix>person</mat-icon>
+
+          <!-- Validation messages — only show when field is touched AND invalid -->
+          @if (username.touched && username.hasError('required')) {
+            <mat-error>Username is required</mat-error>
+          }
+          @if (username.touched && username.hasError('minlength')) {
+            <mat-error>Username must be at least 3 characters</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- PASSWORD FIELD -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            [type]="hidePassword() ? 'password' : 'text'"
+            placeholder="Enter your password"
+            autocomplete="current-password" />
+
+          <mat-icon matPrefix>lock</mat-icon>
+
+          <!-- Toggle password visibility -->
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+
+          @if (password.touched && password.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          }
+          @if (password.touched && password.hasError('minlength')) {
+            <mat-error>Password must be at least 6 characters</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Global error message (wrong credentials) -->
+        @if (loginError()) {
+          <div class="login-error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ loginError() }}</span>
+          </div>
+        }
+
+        <!-- SUBMIT BUTTON -->
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="full-width login-btn"
+          [disabled]="loading()">
+
+          @if (loading()) {
+            <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+            <span>Signing in...</span>
+          } @else {
+            <span>Sign In</span>
+          }
+        </button>
+
+      </form>
+
+    </mat-card-content>
+
+    <!-- Demo credentials hint -->
+    <mat-card-footer class="login-footer">
+      <p class="hint">Demo: <strong>admin / admin123</strong> or <strong>viewer / viewer123</strong></p>
+    </mat-card-footer>
+
+  </mat-card>
+</div>

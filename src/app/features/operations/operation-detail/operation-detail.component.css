@@ -1,0 +1,146 @@
+.detail-page {
+  padding: 28px 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.back-btn {
+  margin-bottom: 20px;
+  color: #1976d2;
+}
+
+/* Loading / error */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px;
+  gap: 16px;
+  color: #666;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+/* Detail header */
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.detail-title {
+  margin: 0 0 6px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.detail-desc {
+  margin: 0;
+  color: #666;
+}
+
+.header-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Info grid */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.detail-card {
+  border-radius: 10px !important;
+}
+
+.detail-card mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem !important;
+}
+
+/* Detail rows */
+.detail-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  gap: 16px;
+}
+
+.detail-label {
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  font-weight: 500;
+  text-align: right;
+}
+
+.amount {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1565c0;
+}
+
+/* Error card */
+.error-card {
+  border-left: 4px solid #d32f2f !important;
+}
+
+.error-icon {
+  color: #d32f2f !important;
+}
+
+.error-msg {
+  color: #c62828;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+/* Status / priority badges */
+.status-badge, .priority-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status--completed  { background: #e8f5e9; color: #2e7d32; }
+.status--failed     { background: #ffebee; color: #c62828; }
+.status--pending    { background: #fff8e1; color: #f57f17; }
+.status--processing { background: #e3f2fd; color: #1565c0; }
+
+.priority--high   { background: #ffebee; color: #c62828; }
+.priority--medium { background: #fff3e0; color: #e65100; }
+.priority--low    { background: #e8f5e9; color: #2e7d32; }

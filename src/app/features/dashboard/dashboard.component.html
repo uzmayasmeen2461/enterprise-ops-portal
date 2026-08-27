@@ -1,0 +1,99 @@
+<div class="dashboard">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">
+        Welcome back, <strong>{{ authService.loggedInUser()?.username }}</strong>.
+        Here's what's happening today.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" routerLink="/operations">
+        <mat-icon>list_alt</mat-icon>
+        View All Operations
+      </button>
+      <!-- *appRoleAccess — structural directive from Phase 5                  -->
+      <!-- Only rendered into the DOM when the logged-in user has ADMIN role.  -->
+      <!-- The element is never added for a VIEWER; it is not hidden via CSS.  -->
+      <button *appRoleAccess="'ADMIN'" mat-stroked-button color="warn" routerLink="/exceptions">
+        <mat-icon>error_outline</mat-icon>
+        Manage Exceptions
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading dashboard data...</p>
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (error()) {
+    <div class="error-banner">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <!-- Stat cards grid -->
+  @if (!loading() && !error()) {
+    <div class="stats-grid">
+      @for (card of statCards; track card.title) {
+        <app-stat-card
+          [title]="card.title"
+          [count]="card.count"
+          [icon]="card.icon"
+          [color]="card.color">
+        </app-stat-card>
+      }
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <!-- Recent failures section -->
+    <div class="section-header">
+      <h2 class="section-title">
+        <mat-icon class="section-icon danger">error</mat-icon>
+        Recent Failures
+      </h2>
+      <button mat-stroked-button routerLink="/exceptions">
+        View All Exceptions
+      </button>
+    </div>
+
+    @if (recentFailed().length === 0) {
+      <div class="empty-state">
+        <mat-icon>check_circle</mat-icon>
+        <p>No recent failures. All systems operational.</p>
+      </div>
+    } @else {
+      <div class="failures-list">
+        @for (op of recentFailed(); track op.id) {
+          <mat-card class="failure-item" [routerLink]="['/operations', op.id]">
+            <mat-card-content class="failure-content">
+              <div class="failure-left">
+                <span class="op-id">{{ op.operationId }}</span>
+                <span class="op-source">{{ op.sourceSystem }}</span>
+              </div>
+              <div class="failure-middle">
+                <span class="op-error">{{ op.errorMessage }}</span>
+              </div>
+              <div class="failure-right">
+                <span class="priority-badge priority--{{ op.priority.toLowerCase() }}">
+                  {{ op.priority }}
+                </span>
+                <mat-icon class="chevron">chevron_right</mat-icon>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  }
+
+</div>

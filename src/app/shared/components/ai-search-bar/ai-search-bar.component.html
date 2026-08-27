@@ -1,0 +1,93 @@
+<div class="ai-search-bar">
+
+  <div class="ai-label">
+    <mat-icon class="ai-icon">auto_awesome</mat-icon>
+    <span>AI Search</span>
+    <span class="ai-badge">BETA</span>
+  </div>
+
+  <div class="ai-input-row">
+
+    <mat-form-field appearance="outline" class="ai-field">
+      <mat-label>Describe what you're looking for…</mat-label>
+      <input
+        matInput
+        [formControl]="queryControl"
+        placeholder="e.g. show failed high priority operations from PAYMENT_HUB"
+        (keyup.enter)="onSearch()" />
+
+      @if (!loading() && queryControl.value) {
+        <button matSuffix mat-icon-button (click)="onClear()" matTooltip="Clear">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="accent"
+      class="ai-search-btn"
+      (click)="onSearch()"
+      [disabled]="loading() || !queryControl.value.trim()">
+      @if (loading()) {
+        <mat-icon class="btn-spin">auto_awesome</mat-icon>
+      } @else {
+        <mat-icon>search</mat-icon>
+      }
+      {{ loading() ? 'Thinking…' : 'Search' }}
+    </button>
+
+  </div>
+
+  <!-- AI processing status bar — replaces the plain spinner -->
+  @if (loading()) {
+    <div class="ai-thinking">
+      <span class="ai-thinking__dots">
+        <span></span><span></span><span></span>
+      </span>
+      <span class="ai-thinking__text">
+        AI is interpreting your query…
+      </span>
+    </div>
+  }
+
+  <!-- Interpretation feedback — shown after a successful parse -->
+  @if (lastResult(); as result) {
+    <div class="ai-result" [class.ai-result--low]="result.confidence === 'LOW'">
+      <mat-icon class="result-icon">
+        {{ result.confidence === 'HIGH' ? 'check_circle' : 'info' }}
+      </mat-icon>
+      <span>{{ result.interpretation }}</span>
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (errorMessage()) {
+    <div class="ai-error">
+      <mat-icon>warning</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- Suggestion chips — quick-fire example queries -->
+  <div class="suggestion-chips">
+    <span class="chips-label">Try:</span>
+    <button mat-stroked-button class="chip"
+      (click)="queryControl.setValue('show failed high priority operations'); onSearch()">
+      failed high priority
+    </button>
+    <button mat-stroked-button class="chip"
+      (click)="queryControl.setValue('completed operations from payment hub'); onSearch()">
+      completed from PAYMENT_HUB
+    </button>
+    <button mat-stroked-button class="chip"
+      (click)="queryControl.setValue('pending operations from order gateway'); onSearch()">
+      pending from ORDER_GATEWAY
+    </button>
+    <button mat-stroked-button class="chip"
+      (click)="queryControl.setValue('show all failed operations'); onSearch()">
+      all failures
+    </button>
+  </div>
+
+</div>

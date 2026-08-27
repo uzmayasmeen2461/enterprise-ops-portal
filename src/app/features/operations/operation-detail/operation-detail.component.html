@@ -1,0 +1,151 @@
+<div class="detail-page">
+
+  <!-- Back button -->
+  <button mat-button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    Back to Operations
+  </button>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading operation details...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error() && !loading()) {
+    <div class="error-banner">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <!-- Detail content -->
+  @if (operation(); as op) {
+
+    <div class="detail-header">
+      <div>
+        <h1 class="detail-title">{{ op.operationId }}</h1>
+        <p class="detail-desc">{{ op.description }}</p>
+      </div>
+      <div class="header-badges">
+        <span class="status-badge" [class]="getStatusClass(op.status)">
+          {{ op.status | statusFormat }}
+        </span>
+        <span class="priority-badge" [class]="getPriorityClass(op.priority)">
+          {{ op.priority | statusFormat }} Priority
+        </span>
+      </div>
+    </div>
+
+    <!-- Info grid -->
+    <div class="detail-grid">
+
+      <!-- Core Details -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>info</mat-icon> Core Details
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-rows">
+            <div class="detail-row">
+              <span class="detail-label">Operation ID</span>
+              <span class="detail-value">{{ op.operationId }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="detail-row">
+              <span class="detail-label">Source System</span>
+              <span class="detail-value">{{ op.sourceSystem }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="detail-row">
+              <span class="detail-label">Assigned To</span>
+              <span class="detail-value">{{ op.assignedTo }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="detail-row">
+              <span class="detail-label">Retry Count</span>
+              <span class="detail-value">{{ op.retryCount }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Value Details -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>payments</mat-icon> Value
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-rows">
+            <div class="detail-row">
+              <span class="detail-label">Amount</span>
+              <span class="detail-value amount">
+                {{ op.currency }} {{ op.amount | number: '1.2-2' }}
+              </span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="detail-row">
+              <span class="detail-label">Currency</span>
+              <span class="detail-value">{{ op.currency }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Timeline -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>schedule</mat-icon> Timeline
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-rows">
+            <div class="detail-row">
+              <span class="detail-label">Created</span>
+              <span class="detail-value">{{ op.createdDate | date: 'dd MMM yyyy, HH:mm' }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="detail-row">
+              <span class="detail-label">Last Updated</span>
+              <span class="detail-value">{{ op.updatedDate | date: 'dd MMM yyyy, HH:mm' }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Error details — only shown for failed operations -->
+      @if (op.status === 'FAILED') {
+        <mat-card class="detail-card error-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon class="error-icon">error</mat-icon> Error Details
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="detail-rows">
+              <div class="detail-row">
+                <span class="detail-label">Error Message</span>
+                <span class="detail-value error-msg">{{ op.errorMessage }}</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="detail-row">
+                <span class="detail-label">Retry Count</span>
+                <span class="detail-value">{{ op.retryCount }} attempt(s)</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+    </div>
+  }
+
+</div>

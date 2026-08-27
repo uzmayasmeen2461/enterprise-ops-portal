@@ -1,0 +1,17 @@
+<mat-card class="stat-card" [class]="'stat-card--' + color()">
+  <mat-card-content class="stat-content">
+
+    <div class="stat-icon-wrapper" [class]="'icon-bg--' + color()">
+      <mat-icon class="stat-icon">{{ icon() }}</mat-icon>
+    </div>
+
+    <div class="stat-info">
+      <div class="stat-count">{{ count() }}</div>
+      <div class="stat-title">{{ title() }}</div>
+      @if (subtitle()) {
+        <div class="stat-subtitle">{{ subtitle() }}</div>
+      }
+    </div>
+
+  </mat-card-content>
+</mat-card>
