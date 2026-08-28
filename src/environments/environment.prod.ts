@@ -1,6 +1,6 @@
 // Production environment configuration.
-// Replace the apiBaseUrl value below with your deployed Railway backend URL.
+// Replace the apiBaseUrl value below with your deployed Render backend URL.
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://YOUR-APP.up.railway.app'   // ← paste your Railway URL here
+  apiBaseUrl: 'https://enterprise-ops-portal.onrender.com'   // ← paste your Render URL here
 };
