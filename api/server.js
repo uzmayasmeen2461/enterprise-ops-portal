@@ -27,26 +27,34 @@ const PORT = process.env.PORT || 4000;
 // Parse incoming JSON bodies — equivalent to express.json()
 app.use(express.json());
 
-// CORS — allowed origins are driven by environment variables so no code
-// change is needed between local dev and production deployment.
-// Set FRONTEND_URL in your hosting platform's environment variables.
+// CORS — allowed origins include localhost for dev, FRONTEND_URL env var
+// for production, and any *.vercel.app subdomain as a safety net.
 const allowedOrigins = [
   'http://localhost:4200',
-  process.env.FRONTEND_URL          // e.g. https://your-app.vercel.app
-].filter(Boolean);                  // remove undefined if FRONTEND_URL is not set
+  process.env.FRONTEND_URL          // set this in Render environment variables
+].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (curl, Postman, server-to-server)
       if (!origin) return callback(null, true);
+      // Allow exact matches from the allowed list
       if (allowedOrigins.includes(origin)) return callback(null, true);
+      // Safety net: allow any Vercel preview/production deployment
+      if (origin.endsWith('.vercel.app')) return callback(null, true);
       callback(new Error(`CORS: origin '${origin}' is not allowed`));
     },
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: false,
+    optionsSuccessStatus: 204    // some browsers require 204 for preflight
   })
 );
+
+// Explicitly handle OPTIONS preflight for all routes
+// This ensures the browser's CORS preflight check always succeeds
+app.options('*', cors());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/ai', aiRouter);
